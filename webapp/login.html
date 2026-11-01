@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — ExamRank Online Examination Ranking System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 10% 20%, #0a192f 0%, #0f172a 90%);
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+        }
+
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .login-logo {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--navy-900);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--orange-500);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+        }
+
+        .academic-badge {
+            margin-top: 1.5rem;
+            padding: 0.85rem;
+            border-radius: var(--radius-md);
+            background: var(--navy-50);
+            border: 1px solid var(--navy-100);
+            font-size: 0.8125rem;
+            color: var(--navy-700);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-brand">
+            <div class="login-logo">🎓</div>
+            <div>
+                <h2 style="font-size: 1.45rem; color: var(--navy-900);">ExamRank</h2>
+                <span style="font-size: 0.75rem; color: var(--orange-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Examination Ranking System</span>
+            </div>
+        </div>
+
+        <p style="color: var(--gray-500); font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Sign in with your administrative or faculty credentials to access the ranking dashboard.
+        </p>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" class="form-control-custom" placeholder="e.g. admin" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control-custom" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" id="btn-login" class="btn-primary-custom" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem; font-size: 1rem;">
+                Sign In to Dashboard →
+            </button>
+        </form>
+
+        <div class="academic-badge">
+            <div style="font-weight: 700; color: var(--navy-900); margin-bottom: 0.25rem;">📌 Demo Academic Credentials:</div>
+            <div>• <strong>Admin:</strong> <code>admin</code> / <code>admin123</code> (Role: ADMIN)</div>
+            <div>• <strong>Faculty:</strong> <code>faculty</code> / <code>faculty123</code> (Role: FACULTY)</div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // If already logged in, redirect to dashboard
+            await checkAuth(false);
+
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const u = document.getElementById('username').value.trim();
+                const p = document.getElementById('password').value;
+
+                if (!u || !p) {
+                    showToast('Username and password are required', 'warning');
+                    return;
+                }
+
+                const btn = document.getElementById('btn-login');
+                btn.disabled = true;
+                btn.textContent = 'Verifying credentials...';
+
+                try {
+                    const resp = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: u, password: p })
+                    });
+                    const json = await resp.json();
+
+                    if (json.success) {
+                        showToast('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/pages/dashboard.html';
+                        }, 500);
+                    } else {
+                        showToast(json.error || 'Authentication failed', 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Sign In to Dashboard →';
+                    }
+                } catch (err) {
+                    showToast('Server connection error. Ensure Tomcat is running.', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In to Dashboard →';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

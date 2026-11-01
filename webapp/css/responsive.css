@@ -1,0 +1,89 @@
+/* ==========================================================================
+   ExamRank — Responsive Breakpoints
+   Mobile, Tablet, and Desktop Adjustments
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 80px;
+    }
+
+    .brand-text,
+    .menu-category,
+    .menu-item span,
+    .user-info {
+        display: none;
+    }
+
+    .sidebar-brand {
+        justify-content: center;
+        padding: 1rem 0;
+    }
+
+    .menu-item a {
+        justify-content: center;
+        padding: 0.75rem 0;
+    }
+
+    .podium-container {
+        grid-template-columns: 1fr;
+    }
+
+    .podium-card.rank-1 {
+        order: 1;
+        transform: none;
+    }
+    .podium-card.rank-2 {
+        order: 2;
+    }
+    .podium-card.rank-3 {
+        order: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0.5rem;
+    }
+
+    .menu-item a {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .top-navbar {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .content-body {
+        padding: 1rem;
+    }
+
+    .toolbar-custom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input-group {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

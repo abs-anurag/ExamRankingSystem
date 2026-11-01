@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Analytics — ExamRank</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container-box {
+            position: relative;
+            height: 280px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">🎓</div>
+                <div class="brand-text">
+                    <h2>ExamRank</h2>
+                    <span>Online Ranking System</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Main Menu</li>
+                <li class="menu-item">
+                    <a href="/pages/dashboard.html">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/candidates.html">
+                        <i>👨‍🎓</i>
+                        <span>Manage Candidates</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/examinations.html">
+                        <i>📝</i>
+                        <span>Manage Examinations</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/scores.html">
+                        <i>🎯</i>
+                        <span>Manage Scores</span>
+                    </a>
+                </li>
+
+                <li class="menu-category">ADSA Rankings</li>
+                <li class="menu-item">
+                    <a href="/pages/merit-list.html">
+                        <i>🏆</i>
+                        <span>Merit List</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/leaderboard.html">
+                        <i>🥇</i>
+                        <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/pages/analytics.html">
+                        <i>📈</i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Administrator</div>
+                        <div class="user-role" id="sidebar-user-role">ADMIN</div>
+                    </div>
+                    <button class="btn-logout" title="Sign Out" onclick="logout()">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h1>Performance Analytics</h1>
+                    <p>Statistical score distributions, pass rates, and departmental metrics</p>
+                </div>
+
+                <div class="top-actions">
+                    <div class="adsa-pill">
+                        <span></span>
+                        Visualized with Chart.js
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Examination Selector Toolbar -->
+                <div class="toolbar-custom">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <label for="analytics-exam-select" style="font-weight: 700; color: var(--navy-900);">Select Examination:</label>
+                        <select id="analytics-exam-select" class="select-custom" style="min-width: 300px; font-weight: 600;">
+                            <option value="">Loading examinations...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Evaluated Candidates</p>
+                            <h3 id="m-candidates">--</h3>
+                        </div>
+                        <div class="stat-icon icon-blue">👥</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Average Marks</p>
+                            <h3 id="m-avg">--</h3>
+                        </div>
+                        <div class="stat-icon icon-orange">📊</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Highest Score</p>
+                            <h3 id="m-highest" style="color: var(--success);">--</h3>
+                        </div>
+                        <div class="stat-icon icon-green">👑</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Lowest Score</p>
+                            <h3 id="m-lowest" style="color: var(--danger);">--</h3>
+                        </div>
+                        <div class="stat-icon icon-purple">📉</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Pass Rate (≥ 40%)</p>
+                            <h3 id="m-pass" style="color: var(--success);">--</h3>
+                        </div>
+                        <div class="stat-icon icon-green">✅</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <p>Fail Rate (< 40%)</p>
+                            <h3 id="m-fail" style="color: var(--danger);">--</h3>
+                        </div>
+                        <div class="stat-icon icon-orange">⚠️</div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <div class="chart-grid">
+                    <!-- Score Distribution Bar Chart -->
+                    <div class="chart-card">
+                        <h3 style="color: var(--navy-900); font-size: 1.1rem; margin-bottom: 0.5rem;">Score Distribution Breakdown</h3>
+                        <p style="font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 1rem;">Candidate count across grade tiers</p>
+                        <div class="chart-container-box">
+                            <canvas id="scoreDistChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Pass vs Fail Doughnut Chart -->
+                    <div class="chart-card">
+                        <h3 style="color: var(--navy-900); font-size: 1.1rem; margin-bottom: 0.5rem;">Overall Pass vs Fail Ratio</h3>
+                        <p style="font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 1rem;">Based on 40% threshold requirement</p>
+                        <div class="chart-container-box">
+                            <canvas id="passFailChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Performance Chart -->
+                <div class="chart-card">
+                    <h3 style="color: var(--navy-900); font-size: 1.1rem; margin-bottom: 0.5rem;">Department-Wise Performance Comparison</h3>
+                    <p style="font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 1rem;">Average marks scored by each engineering department</p>
+                    <div class="chart-container-box" style="height: 320px;">
+                        <canvas id="deptPerfChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/analytics.js"></script>
+</body>
+</html>
+

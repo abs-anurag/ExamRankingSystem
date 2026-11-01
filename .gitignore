@@ -1,0 +1,34 @@
+# Compiled class files
+*.class
+bin/
+webapp/WEB-INF/classes/
+webapp/WEB-INF/lib/
+
+# Local Tomcat Server runtime & logs
+server/
+*.log
+
+# Package Files (Keep project library dependencies)
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Track libraries in lib/
+!lib/*.jar
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath

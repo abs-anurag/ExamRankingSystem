@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Examinations — ExamRank</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">🎓</div>
+                <div class="brand-text">
+                    <h2>ExamRank</h2>
+                    <span>Online Ranking System</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Main Menu</li>
+                <li class="menu-item">
+                    <a href="/pages/dashboard.html">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/candidates.html">
+                        <i>👨‍🎓</i>
+                        <span>Manage Candidates</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/pages/examinations.html">
+                        <i>📝</i>
+                        <span>Manage Examinations</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/scores.html">
+                        <i>🎯</i>
+                        <span>Manage Scores</span>
+                    </a>
+                </li>
+
+                <li class="menu-category">ADSA Rankings</li>
+                <li class="menu-item">
+                    <a href="/pages/merit-list.html">
+                        <i>🏆</i>
+                        <span>Merit List</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/leaderboard.html">
+                        <i>🥇</i>
+                        <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/analytics.html">
+                        <i>📈</i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Administrator</div>
+                        <div class="user-role" id="sidebar-user-role">ADMIN</div>
+                    </div>
+                    <button class="btn-logout" title="Sign Out" onclick="logout()">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h1>Examination Management</h1>
+                    <p>Create and configure academic assessments and scoring criteria</p>
+                </div>
+
+                <div class="top-actions">
+                    <button id="btn-add-exam" class="btn-primary-custom">
+                        ➕ Add Examination
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Search & Counter Toolbar -->
+                <div class="toolbar-custom">
+                    <div class="search-input-group">
+                        <span>🔍</span>
+                        <input type="text" id="search-exam-input" placeholder="Search examination title...">
+                    </div>
+
+                    <span id="exam-count" class="badge-custom badge-dept" style="font-size: 0.8125rem;">
+                        -- Examinations
+                    </span>
+                </div>
+
+                <!-- Examinations Table -->
+                <section class="custom-card" style="padding: 0;">
+                    <div class="table-responsive-custom">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Exam ID</th>
+                                    <th>Examination Title</th>
+                                    <th>Maximum Marks</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="exams-tbody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 2rem;">Loading examinations from MySQL...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Examination Modal -->
+    <div id="add-exam-modal" class="modal-overlay">
+        <div class="modal-content-custom">
+            <h3 style="color: var(--navy-900); margin-bottom: 1.25rem;">Create New Examination</h3>
+            <form id="add-exam-form">
+                <div class="form-group">
+                    <label for="add-exam-name">Examination Name</label>
+                    <input type="text" id="add-exam-name" class="form-control-custom" placeholder="e.g. Operating Systems (OS)" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-exam-max">Maximum Marks</label>
+                    <input type="number" id="add-exam-max" class="form-control-custom" placeholder="e.g. 100" min="1" step="0.5" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline-custom" onclick="closeModal('add-exam-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Create Examination</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Examination Modal -->
+    <div id="edit-exam-modal" class="modal-overlay">
+        <div class="modal-content-custom">
+            <h3 style="color: var(--navy-900); margin-bottom: 1.25rem;">Update Examination Details</h3>
+            <form id="edit-exam-form">
+                <input type="hidden" id="edit-exam-id">
+                <div class="form-group">
+                    <label for="edit-exam-name">Examination Name</label>
+                    <input type="text" id="edit-exam-name" class="form-control-custom" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-exam-max">Maximum Marks</label>
+                    <input type="number" id="edit-exam-max" class="form-control-custom" min="1" step="0.5" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline-custom" onclick="closeModal('edit-exam-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Update Examination</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/examinations.js"></script>
+</body>
+</html>
+

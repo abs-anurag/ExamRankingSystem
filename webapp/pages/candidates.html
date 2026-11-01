@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Candidates — ExamRank</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">🎓</div>
+                <div class="brand-text">
+                    <h2>ExamRank</h2>
+                    <span>Online Ranking System</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Main Menu</li>
+                <li class="menu-item">
+                    <a href="/pages/dashboard.html">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/pages/candidates.html">
+                        <i>👨‍🎓</i>
+                        <span>Manage Candidates</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/examinations.html">
+                        <i>📝</i>
+                        <span>Manage Examinations</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/scores.html">
+                        <i>🎯</i>
+                        <span>Manage Scores</span>
+                    </a>
+                </li>
+
+                <li class="menu-category">ADSA Rankings</li>
+                <li class="menu-item">
+                    <a href="/pages/merit-list.html">
+                        <i>🏆</i>
+                        <span>Merit List</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/leaderboard.html">
+                        <i>🥇</i>
+                        <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/analytics.html">
+                        <i>📈</i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Administrator</div>
+                        <div class="user-role" id="sidebar-user-role">ADMIN</div>
+                    </div>
+                    <button class="btn-logout" title="Sign Out" onclick="logout()">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h1>Candidate Management</h1>
+                    <p>Register, inspect, and update student candidates</p>
+                </div>
+
+                <div class="top-actions">
+                    <button id="btn-add-candidate" class="btn-primary-custom">
+                        ➕ Register Candidate
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- ADSA Custom Hash Table Search Card -->
+                <section class="custom-card" style="border-left: 4px solid var(--orange-500);">
+                    <h3 style="font-size: 1.1rem; color: var(--navy-900); margin-bottom: 0.35rem;">
+                        ⚡ High-Speed Candidate Search (Custom Hash Table)
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.85rem;">
+                        Look up any student by their unique roll number using our in-memory <strong>Hash Table with Separate Chaining</strong> (O(1) average time).
+                    </p>
+
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <input type="text" id="hash-search-input" class="form-control-custom" style="max-width: 340px;" placeholder="Enter Roll Number (e.g. 25BCS001)">
+                        <button id="btn-hash-search" class="btn-navy-custom">
+                            🔍 Search in Hash Table
+                        </button>
+                        <button onclick="loadCandidates()" class="btn-outline-custom">
+                            🔄 Reset Full Directory
+                        </button>
+                    </div>
+
+                    <div id="adsa-search-banner" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; background: var(--navy-50); border: 1px solid var(--navy-100); border-radius: var(--radius-md);"></div>
+                </section>
+
+                <!-- Filter Toolbar -->
+                <div class="toolbar-custom">
+                    <div class="search-input-group">
+                        <span>🔍</span>
+                        <input type="text" id="search-input" placeholder="Search by name or roll number...">
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <select id="dept-filter" class="select-custom">
+                            <option value="">All Departments</option>
+                        </select>
+                        <span id="candidate-count" class="badge-custom badge-dept" style="font-size: 0.8125rem;">
+                            -- Registered
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Candidates Table -->
+                <section class="custom-card" style="padding: 0;">
+                    <div class="table-responsive-custom">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Roll Number</th>
+                                    <th>Student Name</th>
+                                    <th>Department</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="candidates-tbody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">Loading candidates from MySQL...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Candidate Modal -->
+    <div id="add-candidate-modal" class="modal-overlay">
+        <div class="modal-content-custom">
+            <h3 style="color: var(--navy-900); margin-bottom: 1.25rem;">Register New Candidate</h3>
+            <form id="add-candidate-form">
+                <div class="form-group">
+                    <label for="add-roll">Roll Number (Unique)</label>
+                    <input type="text" id="add-roll" class="form-control-custom" placeholder="e.g. 25BCS015" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-name">Student Full Name</label>
+                    <input type="text" id="add-name" class="form-control-custom" placeholder="e.g. Aditya Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-dept">Department</label>
+                    <input type="text" id="add-dept" class="form-control-custom" placeholder="e.g. Computer Science and Engineering" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline-custom" onclick="closeModal('add-candidate-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Save Candidate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Candidate Modal -->
+    <div id="edit-candidate-modal" class="modal-overlay">
+        <div class="modal-content-custom">
+            <h3 style="color: var(--navy-900); margin-bottom: 1.25rem;">Update Candidate Details</h3>
+            <form id="edit-candidate-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-roll">Roll Number</label>
+                    <input type="text" id="edit-roll" class="form-control-custom" disabled style="background: var(--gray-100);">
+                </div>
+                <div class="form-group">
+                    <label for="edit-name">Student Name</label>
+                    <input type="text" id="edit-name" class="form-control-custom" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-dept">Department</label>
+                    <input type="text" id="edit-dept" class="form-control-custom" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn-outline-custom" onclick="closeModal('edit-candidate-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Update Candidate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/candidates.js"></script>
+</body>
+</html>
+

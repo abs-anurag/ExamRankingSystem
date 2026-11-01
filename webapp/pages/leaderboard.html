@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Achievers Leaderboard — ExamRank</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        .limit-btn {
+            background: #ffffff;
+            border: 1px solid var(--gray-300);
+            color: var(--navy-800);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .limit-btn.active {
+            background: var(--orange-500);
+            color: #ffffff;
+            border-color: var(--orange-500);
+            box-shadow: 0 2px 6px rgba(249, 115, 22, 0.35);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">🎓</div>
+                <div class="brand-text">
+                    <h2>ExamRank</h2>
+                    <span>Online Ranking System</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-category">Main Menu</li>
+                <li class="menu-item">
+                    <a href="/pages/dashboard.html">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/candidates.html">
+                        <i>👨‍🎓</i>
+                        <span>Manage Candidates</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/examinations.html">
+                        <i>📝</i>
+                        <span>Manage Examinations</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/scores.html">
+                        <i>🎯</i>
+                        <span>Manage Scores</span>
+                    </a>
+                </li>
+
+                <li class="menu-category">ADSA Rankings</li>
+                <li class="menu-item">
+                    <a href="/pages/merit-list.html">
+                        <i>🏆</i>
+                        <span>Merit List</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/pages/leaderboard.html">
+                        <i>🥇</i>
+                        <span>Leaderboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/pages/analytics.html">
+                        <i>📈</i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Administrator</div>
+                        <div class="user-role" id="sidebar-user-role">ADMIN</div>
+                    </div>
+                    <button class="btn-logout" title="Sign Out" onclick="logout()">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="page-title">
+                    <h1>Top Achievers Leaderboard</h1>
+                    <p>High-efficiency Top-K retrieval via <code>O(N + K log N)</code> Custom Max Heap</p>
+                </div>
+
+                <div class="top-actions">
+                    <div class="adsa-pill">
+                        <span></span>
+                        Algorithm: MaxHeap.getTopK()
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Controls Toolbar -->
+                <div class="toolbar-custom">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <label for="leaderboard-exam-select" style="font-weight: 700; color: var(--navy-900);">Examination:</label>
+                        <select id="leaderboard-exam-select" class="select-custom" style="min-width: 280px; font-weight: 600;">
+                            <option value="">Loading examinations...</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: var(--gray-600);">Display Limit:</span>
+                        <button class="limit-btn active" data-limit="5">Top 5</button>
+                        <button class="limit-btn" data-limit="10">Top 10</button>
+                        <button class="limit-btn" data-limit="20">Top 20</button>
+                    </div>
+                </div>
+
+                <!-- Top 3 Visual Highlights -->
+                <section id="leaderboard-podium" class="podium-container" style="display: none;">
+                    <!-- Rendered by leaderboard.js -->
+                </section>
+
+                <!-- Leaderboard Table -->
+                <section class="custom-card" style="padding: 0;">
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-100);">
+                        <h3 id="leaderboard-title" style="color: var(--navy-900); font-size: 1.15rem;">Top 5 Achievers</h3>
+                    </div>
+                    <div class="table-responsive-custom" style="border: none;">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Roll Number</th>
+                                    <th>Candidate Name</th>
+                                    <th>Department</th>
+                                    <th>Marks & Score Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-tbody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">Loading leaderboard...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/leaderboard.js"></script>
+</body>
+</html>
+
