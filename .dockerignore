@@ -1,0 +1,10 @@
+server/
+bin/
+test/
+*.log
+.git/
+.gitignore
+.env
+.env.*
+*.md
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Test execution script for Online Examination Ranking System
-# Runs both Core ADSA Unit Tests and Live Web Integration Tests
+# Runs Cloud Config Tests, Core ADSA Unit Tests, and Live Web Integration Tests
 
 set -e
 
@@ -14,13 +14,19 @@ echo "=========================================================="
 
 echo ""
 echo "=========================================================="
-echo "1. Running Core ADSA & JDBC Unit Test Suite"
+echo "1. Running Database Connection & Cloud Configuration Tests"
+echo "=========================================================="
+java -cp "lib/*:bin" test.DBConnectionConfigTest
+
+echo ""
+echo "=========================================================="
+echo "2. Running Core ADSA & JDBC Unit Test Suite"
 echo "=========================================================="
 java -cp "lib/*:bin" test.SystemTestSuite
 
 echo ""
 echo "=========================================================="
-echo "2. Running Web API & Servlet Integration Test Suite"
+echo "3. Running Web API & Servlet Integration Test Suite"
 echo "=========================================================="
 
 # Ensure Tomcat is running for web test

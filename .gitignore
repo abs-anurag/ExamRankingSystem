@@ -8,6 +8,12 @@ webapp/WEB-INF/lib/
 server/
 *.log
 
+# Secrets & Environment Variables
+.env
+*.env
+.env.local
+.env.*.local
+
 # Package Files (Keep project library dependencies)
 *.jar
 *.war

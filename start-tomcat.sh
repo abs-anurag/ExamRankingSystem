@@ -6,6 +6,13 @@ set -e
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
 
+# Load local environment variables if .env exists
+if [ -f ".env" ]; then
+    set -a
+    source .env 2>/dev/null || true
+    set +a
+fi
+
 echo "=========================================================="
 echo "Starting ExamRank Web Application on Apache Tomcat..."
 echo "=========================================================="
